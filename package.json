@@ -31,7 +31,7 @@
   },
   "icon": "media/icon.png",
   "activationEvents": [
-    "onStartupFinished"
+    "*"
   ],
   "main": "./dist/extension",
   "scripts": {
@@ -81,8 +81,44 @@
     },
     "commands": [
       {
-        "command": "extension.convert.helloworld",
-        "title": "Hello World"
+        "command": "fanhuaji.Traditional",
+        "title": "Fanhuaji: 繁體化 - 將文字轉換為繁體"
+      },
+      {
+        "command": "fanhuaji.Simplified",
+        "title": "Fanhuaji: 简体化 - 将文字转换为简体"
+      },
+      {
+        "command": "fanhuaji.Taiwan",
+        "title": "Fanhuaji: 台灣化 - 將文字轉換為繁體，並使用台灣地區的詞語修正"
+      },
+      {
+        "command": "fanhuaji.China",
+        "title": "Fanhuaji: 中国化 - 将文字转换为简体，并使用中国地区的词语修正"
+      },
+      {
+        "command": "fanhuaji.Hongkong",
+        "title": "Fanhuaji: 香港化 - 將文字轉換為繁體，並使用香港地區的詞語修正"
+      },
+      {
+        "command": "fanhuaji.Pinyin",
+        "title": "Fanhuaji: 拼音化 - 將文字轉為拼音"
+      },
+      {
+        "command": "fanhuaji.Bopomofo",
+        "title": "Fanhuaji: 注音化 - 將文字轉為注音"
+      },
+      {
+        "command": "fanhuaji.Mars",
+        "title": "Fanhuaji: 火星化 - 將文字轉換為繁體火星文"
+      },
+      {
+        "command": "fanhuaji.WikiSimplified",
+        "title": "Fanhuaji: 维基简体化 - 只使用维基百科的词库将文字转换为简体"
+      },
+      {
+        "command": "fanhuaji.WikiTraditional",
+        "title": "Fanhuaji: 維基繁體化 - 只使用維基百科的詞庫將文字轉換為繁體"
       }
     ]
   }
