@@ -29,7 +29,6 @@
     "color": "#323840",
     "theme": "dark"
   },
-  "icon": "media/icon.png",
   "activationEvents": [
     "*"
   ],
