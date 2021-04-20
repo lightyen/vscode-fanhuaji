@@ -79,6 +79,11 @@
         }
       }
     },
-    "commands": []
+    "commands": [
+      {
+        "command": "extension.convert.helloworld",
+        "title": "Hello World"
+      }
+    ]
   }
 }
