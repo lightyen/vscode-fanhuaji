@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import vscode from "vscode"
 import { Settings } from "../shared"
 
@@ -14,6 +14,51 @@ type Converter =
 	| "WikiSimplified"
 	| "WikiTraditional"
 
+function getSettings(activeEditor?: vscode.TextEditor) {
+	let settings: Settings | undefined
+
+	const ws = vscode.workspace.workspaceFolders
+		?.filter(f => {
+			if (!activeEditor) return false
+			return activeEditor.document.uri.toString().startsWith(f.uri.toString())
+		})
+		.sort((a, b) => b.uri.toString().localeCompare(a.uri.toString()))
+
+	if (ws && ws.length > 0) {
+		settings = vscode.workspace.getConfiguration("", ws[0]).get("fanhuaji")
+	} else {
+		settings = vscode.workspace.getConfiguration("").get("fanhuaji")
+	}
+
+	if (settings?.api.convertParams?.modules != undefined) {
+		if (typeof settings.api.convertParams.modules === "object") {
+			settings.api.convertParams.modules = JSON.stringify(settings?.api.convertParams?.modules)
+		}
+	}
+
+	if (settings?.api.convertParams?.userPreReplace != undefined) {
+		if (settings.api.convertParams.userPreReplace === "object") {
+			settings.api.convertParams.userPreReplace = Object.entries(settings.api.convertParams.userPreReplace)
+				.map(([key, value]) => `${key}=${value}`)
+				.join("\n")
+		}
+	}
+
+	if (settings?.api.convertParams?.userPostReplace != undefined) {
+		if (settings.api.convertParams.userPostReplace === "object") {
+			settings.api.convertParams.userPostReplace = Object.entries(settings.api.convertParams.userPostReplace)
+				.map(([key, value]) => `${key}=${value}`)
+				.join("\n")
+		}
+	}
+
+	if (settings?.api.convertParams?.userProtectReplace instanceof Array) {
+		settings.api.convertParams.userProtectReplace = settings.api.convertParams.userProtectReplace.join("\n")
+	}
+
+	return settings
+}
+
 export async function activate(context: vscode.ExtensionContext) {
 	const Convert = (converter: Converter) => async () => {
 		const editor = vscode.window.activeTextEditor
@@ -21,19 +66,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			return
 		}
 
-		let settings: Settings | undefined
-
-		const ws = vscode.workspace.workspaceFolders
-			?.filter(f => {
-				return editor.document.uri.toString().startsWith(f.uri.toString())
-			})
-			.sort((a, b) => a.uri.toString().localeCompare(b.uri.toString()))
-
-		if (ws && ws.length > 0) {
-			settings = vscode.workspace.getConfiguration("", ws[0]).get("fanhuaji")
-		} else {
-			settings = vscode.workspace.getConfiguration("").get("fanhuaji")
-		}
+		const settings = getSettings(editor)
 
 		interface Data {
 			converter: Converter
@@ -41,24 +74,42 @@ export async function activate(context: vscode.ExtensionContext) {
 			apiKey?: string
 		}
 
-		interface RespData {
+		interface ResponseData {
 			data: {
+				converter: string
 				text: string
+				textFormat: string
+				diff: string | null
+				jpTextStyles: string[]
+				usedModules: string[]
+			}
+			execTime: number
+			msg: string
+			revirsions: {
+				build: string
+				msg: string
+				time: number
 			}
 		}
 
 		async function post<T>(data: Data) {
-			return axios.post<T>((settings?.apiServer || "https://api.zhconvert.org") + "/convert", data)
+			return axios.post<T>((settings?.api.server || "https://api.zhconvert.org") + "/convert", data)
 		}
 
 		async function convert(text: string) {
 			try {
 				if (text === "") {
-					return ""
+					return text
 				}
-				const resp = await post<RespData>({ converter, text })
+				const resp = await post<ResponseData>({ converter, text, ...(settings?.api?.convertParams || null) })
 				return resp.data.data.text
 			} catch (err) {
+				if (axios.isAxiosError(err)) {
+					const error: AxiosError = err
+					await vscode.window.showErrorMessage(error.message)
+				} else {
+					await vscode.window.showErrorMessage(err)
+				}
 				return text
 			}
 		}
@@ -66,7 +117,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		const document = editor.document
 		const items = editor.selections.map(selection => ({ selection, text: document.getText(selection) }))
 
-		if (items.every(item => item.text === "")) {
+		if (items.length === 1 && items[0].text === "") {
 			const text = document.getText()
 			const range = new vscode.Range(document.positionAt(0), document.positionAt(text.length))
 			const newText = await convert(text)
@@ -97,6 +148,23 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("fanhuaji.Mars", Convert("Mars")))
 	context.subscriptions.push(vscode.commands.registerCommand("fanhuaji.WikiSimplified", Convert("WikiSimplified")))
 	context.subscriptions.push(vscode.commands.registerCommand("fanhuaji.WikiTraditional", Convert("WikiTraditional")))
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand("fanhuaji.serverInfo", async () => {
+			const settings = getSettings(vscode.window.activeTextEditor)
+			try {
+				const resp = await axios.get((settings?.api.server || "https://api.zhconvert.org") + "/service-info")
+				console.log(resp.data)
+			} catch (err) {
+				if (axios.isAxiosError(err)) {
+					const error: AxiosError = err
+					await vscode.window.showErrorMessage(error.message)
+				} else {
+					await vscode.window.showErrorMessage(err)
+				}
+			}
+		}),
+	)
 }
 
 export async function deactivate() {

@@ -1,1 +1,16 @@
-{}
+{
+  "command.fanhuaji.serviceInfo": "Show Service Infomation",
+  "command.fanhuaji.Traditional": "Traditional - 繁體化",
+  "command.fanhuaji.Simplified": "Simplified - 简体化",
+  "command.fanhuaji.Taiwan": "Taiwan - 台灣化",
+  "command.fanhuaji.China": "China - 中国化",
+  "command.fanhuaji.Hongkong": "Hongkong - 香港化",
+  "command.fanhuaji.Pinyin": "Pinyin - 拼音化",
+  "command.fanhuaji.Bopomofo": "Bopomofo - 注音化",
+  "command.fanhuaji.Mars": "Mars - 火星化",
+  "command.fanhuaji.WikiSimplified": "WikiSimplified - 维基简体化",
+  "command.fanhuaji.WikiTraditional": "WikiTraditional - 維基繁體化",
+  "config.api.server": "API Server",
+  "config.api.key": "API Key",
+  "config.api.convertParams": "Params used on '/convert' entry point, reference: https://docs.zhconvert.org"
+}

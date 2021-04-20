@@ -26,7 +26,7 @@
     "vscode": "^1.52.1"
   },
   "galleryBanner": {
-    "color": "#191A1F",
+    "color": "#323840",
     "theme": "dark"
   },
   "icon": "media/icon.png",
@@ -72,53 +72,102 @@
     "configuration": {
       "title": "Fanhuaji",
       "properties": {
-        "fanhuaji.apiServer": {
-          "description": "API server",
+        "fanhuaji.api.server": {
+          "description": "%config.api.server%",
           "type": "string",
           "default": "https://api.zhconvert.org"
+        },
+        "fanhuaji.api.key": {
+          "description": "%config.api.key%",
+          "type": "string",
+          "default": ""
+        },
+        "fanhuaji.api.convertParams": {
+          "description": "%config.api.convertParams%",
+          "type": "object",
+          "default": {},
+          "properties": {
+            "ignoreTextStyles": {
+              "type": "string"
+            },
+            "jpTextStyles": {
+              "type": "string"
+            },
+            "modules": {
+              "type": "object",
+              "default": {}
+            },
+            "userPreReplace": {
+              "type": "object",
+              "default": {}
+            },
+            "userPostReplace": {
+              "type": "object",
+              "default": {}
+            },
+            "userProtectReplace": {
+              "type": "array",
+              "default": []
+            }
+          }
         }
       }
     },
     "commands": [
       {
+        "command": "fanhuaji.serviceInfo",
+        "title": "%command.fanhuaji.serviceInfo%",
+        "category": "Fanhuaji"
+      },
+      {
         "command": "fanhuaji.Traditional",
-        "title": "Fanhuaji: 繁體化 - 將文字轉換為繁體"
+        "title": "%command.fanhuaji.Traditional%",
+        "category": "Fanhuaji"
       },
       {
         "command": "fanhuaji.Simplified",
-        "title": "Fanhuaji: 简体化 - 将文字转换为简体"
+        "title": "%command.fanhuaji.Simplified%",
+        "category": "Fanhuaji"
       },
       {
         "command": "fanhuaji.Taiwan",
-        "title": "Fanhuaji: 台灣化 - 將文字轉換為繁體，並使用台灣地區的詞語修正"
+        "title": "%command.fanhuaji.Taiwan%",
+        "category": "Fanhuaji"
       },
       {
         "command": "fanhuaji.China",
-        "title": "Fanhuaji: 中国化 - 将文字转换为简体，并使用中国地区的词语修正"
+        "title": "%command.fanhuaji.China%",
+        "category": "Fanhuaji"
       },
       {
         "command": "fanhuaji.Hongkong",
-        "title": "Fanhuaji: 香港化 - 將文字轉換為繁體，並使用香港地區的詞語修正"
+        "title": "%command.fanhuaji.Hongkong%",
+        "category": "Fanhuaji"
       },
       {
         "command": "fanhuaji.Pinyin",
-        "title": "Fanhuaji: 拼音化 - 將文字轉為拼音"
+        "title": "%command.fanhuaji.Pinyin%",
+        "category": "Fanhuaji"
       },
       {
         "command": "fanhuaji.Bopomofo",
-        "title": "Fanhuaji: 注音化 - 將文字轉為注音"
+        "title": "%command.fanhuaji.Bopomofo%",
+        "category": "Fanhuaji"
       },
       {
         "command": "fanhuaji.Mars",
-        "title": "Fanhuaji: 火星化 - 將文字轉換為繁體火星文"
+        "title": "%command.fanhuaji.Mars%",
+        "category": "Fanhuaji"
       },
       {
         "command": "fanhuaji.WikiSimplified",
-        "title": "Fanhuaji: 维基简体化 - 只使用维基百科的词库将文字转换为简体"
+        "title": "%command.fanhuaji.WikiSimplified%",
+        "category": "Fanhuaji"
       },
       {
         "command": "fanhuaji.WikiTraditional",
-        "title": "Fanhuaji: 維基繁體化 - 只使用維基百科的詞庫將文字轉換為繁體"
+        "title": "%command.fanhuaji.WikiTraditional%",
+        "category": "Fanhuaji"
       }
     ]
   }

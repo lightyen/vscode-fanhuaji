@@ -1,1 +1,16 @@
-{}
+{
+  "command.fanhuaji.serviceInfo": "顯示服務資訊",
+  "command.fanhuaji.Traditional": "Traditional - 繁體化",
+  "command.fanhuaji.Simplified": "Simplified - 简体化",
+  "command.fanhuaji.Taiwan": "Taiwan - 台灣化",
+  "command.fanhuaji.China": "China - 中国化",
+  "command.fanhuaji.Hongkong": "Hongkong - 香港化",
+  "command.fanhuaji.Pinyin": "Pinyin - 拼音化",
+  "command.fanhuaji.Bopomofo": "Bopomofo - 注音化",
+  "command.fanhuaji.Mars": "Mars - 火星化",
+  "command.fanhuaji.WikiSimplified": "WikiSimplified - 维基简体化",
+  "command.fanhuaji.WikiTraditional": "WikiTraditional - 維基繁體化",
+  "config.api.server": "API 伺服器位址",
+  "config.api.key": "API 金鑰",
+  "config.convertParams": "將在 /convert API 端點使用的參數，請參考繁化姬說明文件 https://docs.zhconvert.org"
+}
