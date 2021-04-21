@@ -107,10 +107,10 @@
                 "fix"
               ],
               "enumDescriptions": [
-                "無 (當成中文處理)",
-                "保護",
-                "僅保護原文與日文相同的字",
-                "修正"
+                "%config.convertParams.enum.jpConversionStrategy.none%",
+                "%config.convertParams.enum.jpConversionStrategy.protect%",
+                "%config.convertParams.enum.jpConversionStrategy.protectOnlySameOrigin%",
+                "%config.convertParams.enum.jpConversionStrategy.fix%"
               ],
               "default": "protectOnlySameOrigin"
             },
@@ -124,10 +124,10 @@
                 "fix"
               ],
               "enumDescriptions": [
-                "無 (當成中文處理)",
-                "保護",
-                "僅保護原文與日文相同的字",
-                "修正"
+                "%config.convertParams.enum.jpConversionStrategy.none%",
+                "%config.convertParams.enum.jpConversionStrategy.protect%",
+                "%config.convertParams.enum.jpConversionStrategy.protectOnlySameOrigin%",
+                "%config.convertParams.enum.jpConversionStrategy.fix%"
               ],
               "default": "protectOnlySameOrigin"
             },
