@@ -1,8 +1,8 @@
 {
   "name": "vscode-fanhuaji",
   "displayName": "Fanhuaji",
-  "description": "一個繁簡轉換與本地化工具",
-  "version": "0.0.1",
+  "description": "Fanhuaji",
+  "version": "0.0.2",
   "author": "lightyen",
   "license": "MIT",
   "private": true,
@@ -32,6 +32,7 @@
   "activationEvents": [
     "*"
   ],
+  "icon": "media/icon.png",
   "main": "./dist/extension",
   "scripts": {
     "test": "jest",
@@ -71,53 +72,152 @@
     "configuration": {
       "title": "Fanhuaji",
       "properties": {
-        "fanhuaji.api.server": {
-          "description": "%config.api.server%",
+        "fanhuaji.server": {
+          "description": "%config.server%",
           "type": "string",
           "default": "https://api.zhconvert.org"
         },
-        "fanhuaji.api.key": {
-          "description": "%config.api.key%",
+        "fanhuaji.key": {
+          "description": "%config.key%",
           "type": "string",
           "default": ""
         },
-        "fanhuaji.api.convertParams": {
-          "description": "%config.api.convertParams%",
+        "fanhuaji.convertParams": {
+          "description": "%config.convertParams%",
           "type": "object",
           "default": {},
           "properties": {
             "ignoreTextStyles": {
-              "type": "string"
+              "type": "string",
+              "description": "%config.convertParams.ignoreTextStyles%",
+              "default": ""
             },
             "jpTextStyles": {
-              "type": "string"
+              "type": "string",
+              "description": "%config.convertParams.jpTextStyles%",
+              "default": ""
+            },
+            "jpStyleConversionStrategy": {
+              "type": "string",
+              "description": "%config.convertParams.jpStyleConversionStrategy%",
+              "enum": [
+                "none",
+                "protect",
+                "protectOnlySameOrigin",
+                "fix"
+              ],
+              "enumDescriptions": [
+                "無 (當成中文處理)",
+                "保護",
+                "僅保護原文與日文相同的字",
+                "修正"
+              ],
+              "default": "protectOnlySameOrigin"
+            },
+            "jpTextConversionStrategy": {
+              "type": "string",
+              "description": "%config.convertParams.jpTextConversionStrategy%",
+              "enum": [
+                "none",
+                "protect",
+                "protectOnlySameOrigin",
+                "fix"
+              ],
+              "enumDescriptions": [
+                "無 (當成中文處理)",
+                "保護",
+                "僅保護原文與日文相同的字",
+                "修正"
+              ],
+              "default": "protectOnlySameOrigin"
             },
             "modules": {
               "type": "object",
+              "description": "%config.convertParams.modules%",
               "default": {}
             },
             "userPreReplace": {
               "type": "object",
+              "description": "%config.convertParams.userPreReplace%",
               "default": {}
             },
             "userPostReplace": {
               "type": "object",
+              "description": "%config.convertParams.userPostReplace%",
               "default": {}
             },
             "userProtectReplace": {
               "type": "array",
+              "description": "%config.convertParams.userProtectReplace%",
               "default": []
+            },
+            "diffCharLevel": {
+              "type": "boolean",
+              "description": "%config.convertParams.diffCharLevel%",
+              "default": false
+            },
+            "diffContextLines": {
+              "type": "number",
+              "description": "%config.convertParams.diffContextLines%",
+              "default": 1
+            },
+            "diffEnable": {
+              "type": "boolean",
+              "description": "%config.convertParams.diffEnable%",
+              "default": false
+            },
+            "diffIgnoreCase": {
+              "type": "boolean",
+              "description": "%config.convertParams.diffIgnoreCase%",
+              "default": false
+            },
+            "diffIgnoreWhiteSpaces": {
+              "type": "boolean",
+              "description": "%config.convertParams.diffIgnoreWhiteSpaces%",
+              "default": false
+            },
+            "diffTemplate": {
+              "type": "string",
+              "description": "%config.convertParams.diffTemplate%",
+              "enum": [
+                "Inline",
+                "SideBySide",
+                "Unified",
+                "Context",
+                "Json"
+              ],
+              "default": "Inline"
+            },
+            "cleanUpText": {
+              "type": "boolean",
+              "description": "%config.convertParams.cleanUpText%",
+              "default": false
+            },
+            "ensureNewlineAtEof": {
+              "type": "boolean",
+              "description": "%config.convertParams.ensureNewlineAtEof%",
+              "default": false
+            },
+            "translateTabsToSpaces": {
+              "type": "number",
+              "description": "%config.convertParams.translateTabsToSpaces%",
+              "default": -1
+            },
+            "trimTrailingWhiteSpaces": {
+              "type": "boolean",
+              "description": "%config.convertParams.trimTrailingWhiteSpaces%",
+              "default": false
+            },
+            "unifyLeadingHyphen": {
+              "type": "boolean",
+              "description": "%config.convertParams.unifyLeadingHyphen%",
+              "default": false
             }
           }
         }
       }
     },
     "commands": [
-      {
-        "command": "fanhuaji.serviceInfo",
-        "title": "%command.fanhuaji.serviceInfo%",
-        "category": "Fanhuaji"
-      },
       {
         "command": "fanhuaji.Traditional",
         "title": "%command.fanhuaji.Traditional%",
