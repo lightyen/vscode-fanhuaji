@@ -15,7 +15,7 @@ type Converter =
 	| "WikiSimplified"
 	| "WikiTraditional"
 
-function getSettings(activeEditor?: vscode.TextEditor) {
+function getSettings(activeEditor?: vscode.TextEditor): Settings {
 	let settings: Settings | undefined
 
 	const ws = vscode.workspace.workspaceFolders
@@ -57,7 +57,8 @@ function getSettings(activeEditor?: vscode.TextEditor) {
 		settings.convertParams.userProtectReplace = settings.convertParams.userProtectReplace.join("\n")
 	}
 
-	return settings
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	return settings!
 }
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -75,7 +76,9 @@ export async function activate(context: vscode.ExtensionContext) {
 		interface Data {
 			converter: Converter
 			text: string
-			apiKey?: string
+			apiKey: string
+			outputFormat: string
+			prettify: boolean
 		}
 
 		interface ResponseData {
@@ -122,22 +125,29 @@ export async function activate(context: vscode.ExtensionContext) {
 			cancel = source.cancel
 
 			function post<T>(data: Data) {
-				return axios.post<T>((settings?.server || "https://api.zhconvert.org") + "/convert", data, {
+				return axios.post<T>((settings.server || "https://api.zhconvert.org") + "/convert", data, {
 					cancelToken: token,
 				})
 			}
 
-			async function convert(text: string, params?: OptionalConvertParams) {
+			async function convert(text: string, apiKey: string, params?: OptionalConvertParams) {
 				if (text === "") {
 					return text
 				}
-				const resp = await post<ResponseData>({ converter, text, ...params })
+				const resp = await post<ResponseData>({
+					converter,
+					text,
+					apiKey,
+					outputFormat: "json",
+					prettify: false,
+					...params,
+				})
 				return resp.data.data.text
 			}
 
-			async function TryConvert(text: string, params?: OptionalConvertParams) {
+			async function TryConvert(text: string, apiKey: string, params?: OptionalConvertParams) {
 				try {
-					return await convert(text, params)
+					return await convert(text, apiKey, params)
 				} catch (err) {
 					if (axios.isCancel(err)) {
 						return undefined
@@ -164,7 +174,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			if (items.length === 1 && items[0].text === "") {
 				const text = document.getText()
 				const range = new vscode.Range(document.positionAt(0), document.positionAt(text.length))
-				const newText = await TryConvert(text)
+				const newText = await TryConvert(text, settings.key, settings.convertParams)
 				if (newText) {
 					await editor.edit(editBuilder => {
 						editBuilder.replace(range, newText)
@@ -173,7 +183,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			} else {
 				const results = await Promise.all(
 					items.map(async ({ selection, text }) => {
-						return { text: await TryConvert(text), selection }
+						return { text: await TryConvert(text, settings.key, settings.convertParams), selection }
 					}),
 				)
 				await editor.edit(async editBuilder => {
