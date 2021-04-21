@@ -1,5 +1,6 @@
 import axios, { AxiosError, Canceler, CancelToken } from "axios"
 import vscode, { TextEditor } from "vscode"
+import { intl } from "./locale"
 import { OptionalConvertParams, Settings } from "./settings"
 
 type Converter =
@@ -100,8 +101,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.window.withProgress(
 			{
 				location: vscode.ProgressLocation.Notification,
-				title: "轉換中...",
-
+				title: intl.formatMessage({ id: "ext.running" }),
 				cancellable: true,
 			},
 			async (progress, token) => {

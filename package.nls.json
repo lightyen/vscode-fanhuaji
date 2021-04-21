@@ -30,5 +30,6 @@
   "config.convertParams.ensureNewlineAtEof": "確保輸出的文本結尾處有一個且只有一個換行符。",
   "config.convertParams.translateTabsToSpaces": "轉換每行開頭的 Tab 為數個空格。此值可以是 -1~8 之間的整數。 -1 表示不轉換； 0 表示移除開頭 Tab 。 1~8 表示轉換為數個空白。",
   "config.convertParams.trimTrailingWhiteSpaces": "移除每行結尾的多餘空格。",
-  "config.convertParams.unifyLeadingHyphen": "將區分說話人用的連字號統一為半形減號。"
+  "config.convertParams.unifyLeadingHyphen": "將區分說話人用的連字號統一為半形減號。",
+  "ext.running": "轉換中"
 }
