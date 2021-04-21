@@ -1,5 +1,5 @@
 import axios, { AxiosError, Canceler, CancelToken } from "axios"
-import vscode from "vscode"
+import vscode, { TextEditor } from "vscode"
 import { OptionalConvertParams, Settings } from "./settings"
 
 type Converter =
@@ -62,6 +62,7 @@ function getSettings(activeEditor?: vscode.TextEditor) {
 export async function activate(context: vscode.ExtensionContext) {
 	let token: CancelToken
 	let cancel: Canceler
+
 	const Convert = (converter: Converter) => async () => {
 		const editor = vscode.window.activeTextEditor
 		if (!editor) {
@@ -96,63 +97,77 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		cancel?.()
 
-		const source = axios.CancelToken.source()
-		token = source.token
-		cancel = source.cancel
+		vscode.window.withProgress(
+			{
+				location: vscode.ProgressLocation.Notification,
+				title: "轉換中...",
+				cancellable: true,
+			},
+			async (progress, token) => {
+				token.onCancellationRequested(() => cancel?.())
+				return doConvert(editor)
+			},
+		)
 
-		function post<T>(data: Data) {
-			return axios.post<T>((settings?.server || "https://api.zhconvert.org") + "/convert", data, {
-				cancelToken: token,
-			})
-		}
+		async function doConvert(editor: TextEditor): Promise<void> {
+			const source = axios.CancelToken.source()
+			token = source.token
+			cancel = source.cancel
 
-		async function convert(text: string, params?: OptionalConvertParams) {
-			if (text === "") {
-				return text
-			}
-			const resp = await post<ResponseData>({ converter, text, ...params })
-			return resp.data.data.text
-		}
-
-		async function TryConvert(text: string, params?: OptionalConvertParams) {
-			try {
-				return await convert(text, params)
-			} catch (err) {
-				if (axios.isAxiosError(err)) {
-					const error: AxiosError = err
-					await vscode.window.showErrorMessage(error.message)
-				} else {
-					await vscode.window.showErrorMessage(err)
-				}
-				return undefined
-			}
-		}
-
-		const document = editor.document
-		const items = editor.selections.map(selection => ({ selection, text: document.getText(selection) }))
-
-		if (items.length === 1 && items[0].text === "") {
-			const text = document.getText()
-			const range = new vscode.Range(document.positionAt(0), document.positionAt(text.length))
-			const newText = await TryConvert(text)
-			if (newText) {
-				await editor.edit(editBuilder => {
-					editBuilder.replace(range, newText)
+			function post<T>(data: Data) {
+				return axios.post<T>((settings?.server || "https://api.zhconvert.org") + "/convert", data, {
+					cancelToken: token,
 				})
 			}
-		} else {
-			const results = await Promise.all(
-				items.map(async ({ selection, text }) => {
-					return { text: await TryConvert(text), selection }
-				}),
-			)
-			await editor.edit(async editBuilder => {
-				for (const { selection, text } of results) {
-					if (text) {
-						editBuilder.replace(selection, text)
-					}
+
+			async function convert(text: string, params?: OptionalConvertParams) {
+				if (text === "") {
+					return text
 				}
-			})
+				const resp = await post<ResponseData>({ converter, text, ...params })
+				return resp.data.data.text
+			}
+
+			async function TryConvert(text: string, params?: OptionalConvertParams) {
+				try {
+					return await convert(text, params)
+				} catch (err) {
+					if (axios.isAxiosError(err)) {
+						const error: AxiosError = err
+						await vscode.window.showErrorMessage(error.message)
+					} else {
+						await vscode.window.showErrorMessage(err)
+					}
+					return undefined
+				}
+			}
+
+			const document = editor.document
+			const items = editor.selections.map(selection => ({ selection, text: document.getText(selection) }))
+
+			if (items.length === 1 && items[0].text === "") {
+				const text = document.getText()
+				const range = new vscode.Range(document.positionAt(0), document.positionAt(text.length))
+				const newText = await TryConvert(text)
+				if (newText) {
+					await editor.edit(editBuilder => {
+						editBuilder.replace(range, newText)
+					})
+				}
+			} else {
+				const results = await Promise.all(
+					items.map(async ({ selection, text }) => {
+						return { text: await TryConvert(text), selection }
+					}),
+				)
+				await editor.edit(async editBuilder => {
+					for (const { selection, text } of results) {
+						if (text) {
+							editBuilder.replace(selection, text)
+						}
+					}
+				})
+			}
 		}
 	}
 
@@ -169,5 +184,5 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export async function deactivate() {
-	//
+	// do nothing.
 }
