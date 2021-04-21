@@ -101,15 +101,22 @@ export async function activate(context: vscode.ExtensionContext) {
 			{
 				location: vscode.ProgressLocation.Notification,
 				title: "轉換中...",
+
 				cancellable: true,
 			},
 			async (progress, token) => {
 				token.onCancellationRequested(() => cancel?.())
-				return doConvert(editor)
+				return doConvert(editor, progress)
 			},
 		)
 
-		async function doConvert(editor: TextEditor): Promise<void> {
+		async function doConvert(
+			editor: TextEditor,
+			progress: vscode.Progress<{
+				message?: string | undefined
+				increment?: number | undefined
+			}>,
+		): Promise<void> {
 			const source = axios.CancelToken.source()
 			token = source.token
 			cancel = source.cancel
