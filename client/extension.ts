@@ -132,12 +132,21 @@ export async function activate(context: vscode.ExtensionContext) {
 				try {
 					return await convert(text, params)
 				} catch (err) {
+					if (axios.isCancel(err)) {
+						return undefined
+					}
+
 					if (axios.isAxiosError(err)) {
 						const error: AxiosError = err
 						await vscode.window.showErrorMessage(error.message)
-					} else {
-						await vscode.window.showErrorMessage(err)
+						return undefined
 					}
+
+					if (err?.message) {
+						await vscode.window.showErrorMessage(err?.message)
+						return undefined
+					}
+
 					return undefined
 				}
 			}
