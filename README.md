@@ -1,5 +1,15 @@
 # VS Code - Fanhuaji
 
+## 安裝
+
+```sh
+code --install-extension vscode-fanhuaji-0.0.4.vsix
+```
+
+or
+
+快捷鍵 `F1` -> `Extension: Install from VSIX...`
+
 ## 簡介
 
 繁化姬是一個繁簡轉換與本地化的工具，除了轉換模式外， 尚擁有轉換模組用於應付特定情況下的轉換。 並且在轉換完成後，提供與轉換前的差異比較，以讓使用者知曉哪些地方被轉換了。
