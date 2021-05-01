@@ -91,6 +91,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				usedModules: string[]
 			}
 			execTime: number
+			code: number
 			msg: string
 			revirsions: {
 				build: string
@@ -142,6 +143,9 @@ export async function activate(context: vscode.ExtensionContext) {
 					prettify: false,
 					...params,
 				})
+				if (resp.data.data.text == undefined) {
+					throw resp.data.msg
+				}
 				return resp.data.data.text
 			}
 
@@ -164,6 +168,7 @@ export async function activate(context: vscode.ExtensionContext) {
 						return undefined
 					}
 
+					await vscode.window.showErrorMessage(err)
 					return undefined
 				}
 			}
