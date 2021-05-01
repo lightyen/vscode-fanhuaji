@@ -159,23 +159,22 @@ export async function activate(context: vscode.ExtensionContext) {
 
 					if (axios.isAxiosError(err)) {
 						const error: AxiosError = err
-						await vscode.window.showErrorMessage(error.message)
+						vscode.window.showErrorMessage(error.message)
 						return undefined
 					}
 
 					if (err?.message) {
-						await vscode.window.showErrorMessage(err?.message)
+						vscode.window.showErrorMessage(err?.message)
 						return undefined
 					}
 
-					await vscode.window.showErrorMessage(err)
+					vscode.window.showErrorMessage(err)
 					return undefined
 				}
 			}
 
 			const document = editor.document
 			const items = editor.selections.map(selection => ({ selection, text: document.getText(selection) }))
-
 			if (items.length === 1 && items[0].text === "") {
 				const text = document.getText()
 				const range = new vscode.Range(document.positionAt(0), document.positionAt(text.length))
@@ -199,6 +198,7 @@ export async function activate(context: vscode.ExtensionContext) {
 					}
 				})
 			}
+			return
 		}
 	}
 
