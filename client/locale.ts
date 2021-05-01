@@ -10,12 +10,12 @@ const cache = createIntlCache()
 
 export let intl: ReturnType<typeof createIntl>
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function init() {
 	let messages: IntlConfig["messages"]
 	try {
 		messages = __non_webpack_require__(`../package.nls.${nlsConfig.locale}.json`)
 	} catch (err) {
-		console.log("load locale messages failed:", err)
 		messages = defaultMessages
 	}
 	intl = createIntl(
