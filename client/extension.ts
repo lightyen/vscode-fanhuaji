@@ -1,4 +1,5 @@
 import axios, { AxiosError, Canceler, CancelToken } from "axios"
+import { TextEncoder } from "util"
 import vscode, { TextEditor } from "vscode"
 import { intl } from "./locale"
 import { OptionalConvertParams, Settings } from "./settings"
@@ -71,6 +72,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			return
 		}
 
+		const MAX_TEXT_LENGTH_IN_BYTES = 5000000
 		const settings = getSettings(editor)
 
 		interface Data {
@@ -173,8 +175,41 @@ export async function activate(context: vscode.ExtensionContext) {
 				}
 			}
 
+			function preprocess(items: Array<{ selection: vscode.Selection; text: string }>) {
+				const encoder = new TextEncoder()
+				const arr: Array<{ selection: vscode.Selection; text: string }> = []
+				for (let i = 0; i < items.length; i++) {
+					const len = encoder.encode(items[i].text).length
+					if (len <= MAX_TEXT_LENGTH_IN_BYTES) {
+						arr.push(items[i])
+						continue
+					}
+
+					const p = 2 + len / MAX_TEXT_LENGTH_IN_BYTES
+					const D = Math.floor(items[i].text.length / p)
+
+					for (let j = 0; j < len; j += D) {
+						const a = document.positionAt(j)
+						const b = document.positionAt(j + D)
+						arr.push({
+							text: document.getText(new vscode.Range(a, b)),
+							selection: new vscode.Selection(a, b),
+						})
+					}
+				}
+				return arr
+			}
+
 			const document = editor.document
-			const items = editor.selections.map(selection => ({ selection, text: document.getText(selection) }))
+			let items = editor.selections.map(selection => ({ selection, text: document.getText(selection) }))
+			if (items.length === 1 && items[0].text === "") {
+				const text = document.getText()
+				const selection = new vscode.Selection(document.positionAt(0), document.positionAt(text.length))
+				items[0] = { text, selection }
+			}
+
+			items = preprocess(items)
+
 			if (items.length === 1 && items[0].text === "") {
 				const text = document.getText()
 				const range = new vscode.Range(document.positionAt(0), document.positionAt(text.length))
