@@ -39,10 +39,10 @@ const configClient: Configuration = {
 				exclude: /node_modules|\.test\.ts$/,
 				use: [
 					{
-						loader: "ts-loader",
+						loader: "babel-loader",
 						options: {
-							transpileOnly: true,
-							context: clientWorkspaceFolder,
+							presets: [["@babel/preset-env", { targets: "node 12" }], "@babel/preset-typescript"],
+							plugins: ["@babel/plugin-transform-runtime"],
 						},
 					},
 				],

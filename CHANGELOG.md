@@ -2,7 +2,7 @@
 
 # 0.0.6
 
-- Reject push large text (no split text anymore)
+- Reject push large text (no split text anymore!)
 
 # 0.0.5
 
