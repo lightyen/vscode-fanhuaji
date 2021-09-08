@@ -3,7 +3,7 @@
 ## 安裝
 
 ```sh
-code --install-extension vscode-fanhuaji-0.0.4.vsix
+code --install-extension vscode-fanhuaji-x.x.x.vsix
 ```
 
 or

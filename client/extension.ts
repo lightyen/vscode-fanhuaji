@@ -1,4 +1,4 @@
-import axios, { AxiosError, Canceler, CancelToken } from "axios"
+import axios, { Canceler, CancelToken } from "axios"
 import { TextEncoder } from "util"
 import vscode, { TextEditor } from "vscode"
 import { intl } from "./locale"
@@ -160,17 +160,21 @@ export async function activate(context: vscode.ExtensionContext) {
 					}
 
 					if (axios.isAxiosError(err)) {
-						const error: AxiosError = err
+						const error = err
 						vscode.window.showErrorMessage(error.message)
 						return undefined
 					}
 
-					if (err?.message) {
-						vscode.window.showErrorMessage(err?.message)
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					const e = err as { message?: string }
+					if (e?.message) {
+						vscode.window.showErrorMessage(e.message)
 						return undefined
 					}
 
-					vscode.window.showErrorMessage(err)
+					if (typeof err === "string") {
+						vscode.window.showErrorMessage(err)
+					}
 					return undefined
 				}
 			}
@@ -183,18 +187,8 @@ export async function activate(context: vscode.ExtensionContext) {
 					if (len <= MAX_TEXT_LENGTH_IN_BYTES) {
 						arr.push(items[i])
 						continue
-					}
-
-					const p = 2 + len / MAX_TEXT_LENGTH_IN_BYTES
-					const D = Math.floor(items[i].text.length / p)
-
-					for (let j = 0; j < len; j += D) {
-						const a = document.positionAt(j)
-						const b = document.positionAt(j + D)
-						arr.push({
-							text: document.getText(new vscode.Range(a, b)),
-							selection: new vscode.Selection(a, b),
-						})
+					} else {
+						vscode.window.showErrorMessage(`字數不能超過上限 ${MAX_TEXT_LENGTH_IN_BYTES}`)
 					}
 				}
 				return arr
