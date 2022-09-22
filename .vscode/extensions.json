@@ -1,9 +1,0 @@
-{
-  "recommendations": [
-    "dbaeumer.vscode-eslint",
-    "christian-kohler.npm-intellisense",
-    "esbenp.prettier-vscode",
-    "editorconfig.editorconfig",
-    "visualstudioexptteam.vscodeintellicode"
-  ]
-}

@@ -6,7 +6,7 @@
 code --install-extension vscode-fanhuaji-x.x.x.vsix
 ```
 
-or
+或
 
 快捷鍵 `F1` -> `Extension: Install from VSIX...`
 

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+# 1.0.0
+
+- Publish extension to Visual Studio Code Marketplace
+
 # 0.0.6
 
 - Reject push large text (no split text anymore!)

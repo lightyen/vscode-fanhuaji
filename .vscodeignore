@@ -1,5 +1,5 @@
 .vscode
-webpack.config.js
+webpack.*.*
 **/*.ts
 **/*.map
 .gitignore
@@ -14,6 +14,8 @@ extension/**
 client/**/*
 tests/**
 .github/**
-examples
-media/icon.svg
+src/**/*
 media/icon.xcf
+.browserslistrc
+statistics.html
+pnpm-lock.yaml

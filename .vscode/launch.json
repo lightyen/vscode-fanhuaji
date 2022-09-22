@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Client",
+      "name": "Run Extension in VS Code",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
@@ -11,23 +11,20 @@
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "preLaunchTask": {
         "type": "npm",
-        "script": "watch"
+        "script": "watch-node"
       }
     },
     {
-      "name": "Attach to Server",
-      "type": "node",
-      "request": "attach",
-      "port": 6009,
-      "address": "localhost",
-      "protocol": "inspector",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
-    }
-  ],
-  "compounds": [
-    {
-      "name": "Client + Server",
-      "configurations": ["Launch Client", "Attach to Server"]
+      "name": "Run Web Extension in VS Code",
+      "type": "extensionHost",
+      "debugWebWorkerHost": true,
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--extensionDevelopmentKind=web"],
+      "outFiles": ["${workspaceFolder}/dist/web/**/*.js"],
+      "preLaunchTask": {
+        "type": "npm",
+        "script": "watch-web"
+      }
     }
   ]
 }

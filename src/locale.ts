@@ -2,7 +2,9 @@ interface NLSConfig {
 	locale: "en" | "zh-tw"
 }
 
-const nlsConfig = JSON.parse(process.env.VSCODE_NLS_CONFIG ?? "") as NLSConfig
+const nlsConfig: NLSConfig = __VSCODE_WEB__
+	? { locale: "en" }
+	: JSON.parse(process?.env?.VSCODE_NLS_CONFIG ?? '{"locale":"en"}')
 
 import { createIntl, createIntlCache, IntlConfig } from "@formatjs/intl"
 import defaultMessages from "../package.nls.json"
@@ -10,7 +12,6 @@ const cache = createIntlCache()
 
 export let intl: ReturnType<typeof createIntl>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function init() {
 	let messages: IntlConfig["messages"]
 	try {

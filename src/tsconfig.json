@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "ES2020",
+    "types": ["webpack-env", "@types/node"],
+    "rootDir": ".."
+  },
+  "include": ["**/*.ts", "**/*.json", "../package.json", "../package.nls*.json"]
+}

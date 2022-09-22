@@ -1,25 +1,15 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2019",
-    "lib": ["ESNext"],
+    "target": "ES2020",
     "moduleResolution": "node",
     "strict": true,
+    "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "removeComments": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "noImplicitAny": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "sourceMap": true
-  },
-  "references": [{ "path": "./client" }],
-  "exclude": ["node_modules", "**/__tests__/**", "**/*.test.ts"]
+    "exactOptionalPropertyTypes": false,
+    "resolveJsonModule": true
+  }
 }
