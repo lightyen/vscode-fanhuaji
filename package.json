@@ -2,7 +2,7 @@
   "name": "vscode-fanhuaji",
   "displayName": "Fanhuaji 繁化姬",
   "description": "一個繁簡轉換與本地化的文字工具",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "lightyen",
   "license": "MIT",
   "private": true,

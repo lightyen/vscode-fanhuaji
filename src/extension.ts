@@ -1,7 +1,7 @@
 import axios, { Canceler, CancelToken } from "axios"
 import vscode, { TextEditor } from "vscode"
 import { intl } from "./locale"
-import { OptionalConvertParams, Settings } from "./settings"
+import { NAME, OptionalConvertParams, Settings } from "./settings"
 
 function getSettings(activeEditor?: vscode.TextEditor): Settings {
 	let settings: Settings | undefined
@@ -91,6 +91,9 @@ interface ResponseData {
 }
 
 export async function activate(context: vscode.ExtensionContext) {
+	const outputChannel = vscode.window.createOutputChannel(NAME)
+	outputChannel.append(`commit hash: ${__COMMIT_HASH__}`)
+
 	let token: CancelToken
 	let cancel: Canceler
 
