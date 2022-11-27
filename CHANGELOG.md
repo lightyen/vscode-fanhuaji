@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+# 1.0.2
+
+- Reduce api requests
+
 # 1.0.0
 
 - Publish extension to Visual Studio Code Marketplace

@@ -176,17 +176,11 @@ export async function activate(context: vscode.ExtensionContext) {
 				},
 				async (progress, token) => {
 					token.onCancellationRequested(() => cancel?.())
-					return doConvert(editor, progress)
+					return doConvert(editor)
 				},
 			)
 
-			async function doConvert(
-				editor: TextEditor,
-				progress: vscode.Progress<{
-					message?: string | undefined
-					increment?: number | undefined
-				}>,
-			): Promise<void> {
+			async function doConvert(editor: TextEditor): Promise<void> {
 				const source = axios.CancelToken.source()
 				token = source.token
 				cancel = source.cancel
@@ -228,21 +222,59 @@ export async function activate(context: vscode.ExtensionContext) {
 						})
 					}
 				} else {
-					const results = await Promise.all(
-						items.map(async ({ selection, text }) => {
-							return {
-								text: await mustConvert(converter, text, settings.key, settings.convertParams),
-								selection,
-							}
-						}),
-					)
-					await editor.edit(async editBuilder => {
-						for (const { selection, text } of results) {
-							if (text) {
-								editBuilder.replace(selection, text)
-							}
+					const sep = " 𫠬𫠣 "
+					const list: Array<{ texts: string[]; length: number; selections: vscode.Selection[] }> = []
+
+					let o: { texts: string[]; length: number; selections: vscode.Selection[] } = {
+						texts: [],
+						length: 0,
+						selections: [],
+					}
+					for (let i = 0; i < items.length; i++) {
+						const { text, selection } = items[i]
+						if (o.length + sep.length + text.length >= MAX_TEXT_LENGTH_IN_BYTES) {
+							list.push(o)
+							o = { texts: [], length: 0, selections: [] }
+							continue
 						}
-					})
+						o.selections.push(selection)
+						o.texts.push(text)
+						if (o.length) {
+							o.length = o.length + sep.length + text.length
+						} else {
+							o.length = text.length
+						}
+					}
+					list.push(o)
+
+					for (const { texts, selections } of list) {
+						console.log(texts)
+						const text = texts.join(sep)
+						let out = await mustConvert(converter, text, settings.key, settings.convertParams)
+						if (out) {
+							let i = 0
+							const arr: Array<{ selection: vscode.Selection; text: string }> = []
+							while (out.length > 0) {
+								const index = out.indexOf(sep)
+								const text = index !== -1 ? out.slice(0, index) : out
+								if (text) {
+									arr.push({ selection: selections[i], text })
+								}
+								if (index === -1) {
+									break
+								}
+								out = out.slice(index + sep.length)
+								i++
+							}
+							await editor.edit(async editBuilder => {
+								for (const { selection, text } of arr) {
+									if (text) {
+										editBuilder.replace(selection, text)
+									}
+								}
+							})
+						}
+					}
 				}
 			}
 		}
